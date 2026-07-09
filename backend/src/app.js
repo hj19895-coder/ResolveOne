@@ -28,14 +28,12 @@ import reportsRouter from "./routes/reports.js";
 
 const corsOptions = {
   origin: (origin, callback) => {
+    console.log("Checking origin:", origin, "against:", allowedOrigins);
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(new Error("Blocked by CORS"));
+    return callback(null, false);
   },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-};
 
  
 const __filename = fileURLToPath(import.meta.url);
