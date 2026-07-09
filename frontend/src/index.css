@@ -1,0 +1,543 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+/*
+  Important: existing global table styles were causing Tailwind table row height changes
+  (py-/leading-*) to be ignored. Scope table styling to .tbl-card so pages like
+  MasterDataPage / UsersPage can control row height via Tailwind classes.
+*/
+
+/* Ticket details metadata grid (stable read/edit row mode) */
+
+.details-table {
+  width: 100%;
+  border: 1px solid #d9dde3;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+
+.detail-row {
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  min-height: 30px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+
+
+.details-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 24px;
+  align-items: start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+.ticket-details-wrapper {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #ffffff;
+  padding: 14px;
+  margin-top: 18px;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+
+.empty-value {
+  color: #94a3b8;
+  font-style: normal;
+}
+
+
+
+
+
+.detail-value-content {
+  gap: 6px;
+}
+
+
+
+
+.detail-label {
+  background: #f8fafc;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  border-right: 1px solid #edf2f7;
+  text-transform: uppercase;
+}
+
+.detail-value {
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  color: #0f172a;
+  position: relative;
+  overflow: visible;
+}
+
+
+
+.detail-row-hover {
+  cursor: pointer;
+}
+
+.detail-value-content {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.detail-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail-pencil {
+  opacity: 0;
+  transition: opacity 120ms ease;
+  color: #4318ff;
+  flex-shrink: 0;
+}
+
+.detail-row:hover .detail-pencil {
+  opacity: 1;
+}
+
+.detail-editor {
+  width: 100%;
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  pointer-events: auto;
+}
+
+/* Constrain inline editor/search input within the value cell */
+.inline-editor {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: auto;
+  z-index: 40;
+}
+/* Prevent internal search from causing overflow */
+.inline-editor input {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+
+
+
+
+.detail-input {
+  width: 100%;
+  border: 1px solid #dbe4f0;
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+  background: #ffffff;
+  outline: none;
+}
+
+.detail-editor-actions {
+  margin-top: 8px;
+  display: flex;
+  gap: 8px;
+}
+
+.detail-btn-primary {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 0;
+  background: linear-gradient(135deg,#4318FF 0%,#6c47ff 100%);
+  color: #fff;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.detail-btn-secondary {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(67,24,255,0.25);
+  background: rgba(255,255,255,0.6);
+  color: #4318FF;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+.detail-error {
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+@layer components {
+
+  .app-container {
+    max-width: 80rem;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+
+  .card {
+    background-color: #ffffff;
+    border: 1px solid rgb(229 231 235); /* gray-200 */
+    border-radius: 0.75rem; /* rounded-xl */
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* shadow-sm */
+    padding: 1.5rem;
+  }
+
+  .input {
+    width: 100%;
+    border: 1px solid rgb(209 213 219); /* gray-300 */
+    border-radius: 0.5rem; /* rounded-lg */
+    padding: 0.5rem 1rem; /* py-2 px-4 */
+    font-size: 0.875rem; /* text-sm */
+    outline: none;
+    transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  }
+
+  .input:focus {
+    border-color: rgb(37 99 235); /* blue-600 */
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.25); /* approximate focus:ring-blue-500 */
+  }
+
+  .btn-primary {
+    background-color: rgb(37 99 235); /* blue-600 */
+    color: #ffffff;
+    padding: 0.625rem 1.25rem; /* py-2.5 px-5 */
+    border-radius: 0.75rem; /* rounded-lg */
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* shadow-sm */
+    transition: background-color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    background-color: rgb(29 78 216); /* blue-700 */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05); /* shadow-md-ish */
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-secondary {
+    background-color: #ffffff;
+    border: 1px solid rgb(209 213 219); /* gray-300 */
+    color: rgb(75 85 99); /* gray-700 */
+    padding: 0.625rem 1.25rem; /* py-2.5 px-5 */
+    border-radius: 0.75rem; /* rounded-lg */
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05); /* shadow-sm */
+    transition: background-color 150ms ease, box-shadow 150ms ease, opacity 150ms ease;
+  }
+
+  .btn-secondary:hover:not(:disabled) {
+    background-color: rgb(249 250 251); /* gray-50 */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.05); /* shadow-md-ish */
+  }
+
+  .btn-secondary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+/*
+  Enterprise ITSM ticket HTML renderer (Description field)
+  Ensures pasted email content, tables, spacing, and colors render correctly.
+*/
+.ticket-html-content {
+  max-width: 100%;
+  overflow-x: auto;      /* let wide pasted tables scroll instead of squeezing */
+}
+
+.ticket-html-content * {
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.ticket-html-content table {
+  border-collapse: collapse;
+  width: max-content;
+  table-layout: auto;
+  margin: 12px 0;
+  font-size: 13px;
+}
+
+.ticket-html-content td,
+.ticket-html-content th {
+  border: 1px solid #dbe4f0;
+  padding: 0px 5px;
+  vertical-align: top;
+  white-space: nowrap;   /* match the editor — single-line rows, scroll instead of wrap */
+}
+
+.ticket-html-content p {
+  margin-bottom: 14px;
+}
+
+.ticket-html-content img {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
+.ticket-html-content pre {
+  background: #0f172a;
+  color: white;
+  padding: 14px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+.ticket-html-content a {
+  color: #4f46e5;
+  text-decoration: none;
+}
+
+.ticket-html-content ul,
+.ticket-html-content ol {
+  padding-left: 20px;
+  margin: 12px 0;
+}
+
+.detail-editor textarea {
+  min-height: 100px;
+}
+
+.detail-editor:has(textarea) {
+  top: 8px;
+  transform: none;
+}
+
+@keyframes dropdownIn {
+  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Isolate GPU layers — prevent compositing from blurring text */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Premium thin scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(120, 120, 140, 0.35);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(90, 90, 110, 0.55);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(120,120,140,0.35) transparent;
+}
+
+html,
+body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* ── Dark mode: ticket detail rows ────────────────────────────── */
+
+html[data-dashboard-theme="dark"] .details-table,
+html[data-dashboard-theme="dark"] .ticket-details-wrapper {
+  background: #090e1b;
+  border-color: rgba(148,163,184,0.16);
+}
+
+html[data-dashboard-theme="dark"] .detail-row {
+  border-bottom-color: rgba(148,163,184,0.10);
+}
+
+html[data-dashboard-theme="dark"] .detail-label {
+  background: #090e1b;
+  color: #94A3B8;
+  border-right-color: rgba(148,163,184,0.10);
+}
+
+html[data-dashboard-theme="dark"] .detail-value {
+  background: #0c1220;
+  color: #F1F5F9;
+}
+
+html[data-dashboard-theme="dark"] .empty-value {
+  color: #64748B;
+}
+
+html[data-dashboard-theme="dark"] .detail-pencil {
+  color: #A78BFA;
+}
+
+html[data-dashboard-theme="dark"] .detail-input {
+  background: #0B1524;
+  border-color: rgba(148,163,184,0.18);
+  color: #F1F5F9;
+}
+
+html[data-dashboard-theme="dark"] .detail-input::placeholder {
+  color: #64748B;
+}
+
+html[data-dashboard-theme="dark"] .detail-btn-secondary {
+  background: rgba(147,51,234,0.10);
+  border-color: rgba(196,181,253,0.28);
+  color: #C4B5FD;
+}
+
+html[data-dashboard-theme="dark"] .detail-error {
+  color: #F87171;
+}
+
+/* ── Dark mode: rich-text description content ─────────────────── */
+
+html[data-dashboard-theme="dark"] .ticket-html-content {
+  color: #E2E8F0;
+}
+
+html[data-dashboard-theme="dark"] .ticket-html-content th {
+  background: #0B1524;
+  color: #CBD5E1;
+  border-color: rgba(148,163,184,0.18);
+}
+
+html[data-dashboard-theme="dark"] .ticket-html-content td {
+  border-color: rgba(148,163,184,0.18);
+}
+
+html[data-dashboard-theme="dark"] .ticket-html-content a {
+  color: #A78BFA;
+}
+
+.tiptap-wrapper {
+  border: 1px solid #dbe4f0;
+  border-radius: 12px;
+  background: white;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden; /* toolbar stays fixed, only content area below scrolls */
+}
+
+.tiptap {
+  min-height: 220px;
+  max-height: 320px;
+  overflow-y: auto;
+  overflow-x: auto;
+  outline: none;
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.7;
+  padding: 14px;
+}
+
+.tiptap table {
+  border-collapse: collapse;
+  width: max-content;   /* size to actual (converted) column widths, not stretched */
+  table-layout: auto;
+  margin: 16px 0;
+  font-size: 12.5px;
+}
+
+
+.tiptap td,
+.tiptap th {
+  border: 1px solid #dbe4f0;
+  padding: 0px 3px;      /* tighter than 6px 10px */
+  vertical-align: top;
+  white-space: nowrap;
+  font-size: 12.5px;
+}
+
+/* Kill Chrome's autofill dark-background override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: #111827 !important;
+  caret-color: #111827 !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+html[data-dashboard-theme="dark"] input:-webkit-autofill,
+html[data-dashboard-theme="dark"] input:-webkit-autofill:hover,
+html[data-dashboard-theme="dark"] input:-webkit-autofill:focus,
+html[data-dashboard-theme="dark"] input:-webkit-autofill:active,
+html[data-dashboard-theme="dark"] textarea:-webkit-autofill,
+html[data-dashboard-theme="dark"] textarea:-webkit-autofill:hover,
+html[data-dashboard-theme="dark"] textarea:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 1000px rgba(15,23,42,0.55) inset !important;
+  -webkit-text-fill-color: #e5edf7 !important;
+  caret-color: #e5edf7 !important;
+}

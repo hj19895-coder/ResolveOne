@@ -1,0 +1,250 @@
+/* ═══════════════════════════════════════════════════════════════════════
+   Dashboard Showcase — scroll disassemble section
+   Relies on the CSS custom properties defined on .lp in Landing.css
+   (--c-purple-*, --c-cyan, --c-text*, --c-border, --font-display, --font-main)
+   so this must render *inside* the .lp wrapper.
+   ═══════════════════════════════════════════════════════════════════════ */
+
+.dsx-section {
+  position: relative;
+  height: 260vh; /* scroll runway — increase for a slower/longer disassemble */
+}
+
+.dsx-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 24px;
+}
+
+.dsx-headline {
+  text-align: center;
+  max-width: 560px;
+  margin-bottom: 36px;
+  will-change: opacity, transform;
+}
+.dsx-eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--c-purple-1);
+  margin-bottom: 10px;
+}
+.dsx-h2 {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
+}
+.dsx-h2 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--c-purple-1), var(--c-cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.dsx-sub {
+  font-size: 15px;
+  color: var(--c-text-muted);
+  line-height: 1.6;
+}
+
+.dsx-stage {
+  position: relative;
+  width: 100%;
+  max-width: 780px;
+  aspect-ratio: 16 / 10;
+  perspective: 1400px;
+}
+
+.dsx-panel {
+  position: absolute;
+  background: rgba(14, 10, 30, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 16px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  overflow: hidden;
+  will-change: transform, box-shadow;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: z-index 0s;
+}
+
+.dsx-panel-inner {
+  padding: 14px 16px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.dsx-panel-center {
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.dsx-panel-title {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 10px;
+}
+
+/* Tickets panel */
+.dsx-ticket-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: hidden;
+}
+.dsx-ticket-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  min-width: 0;
+}
+.dsx-ticket-tag {
+  font-size: 8.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 6px;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+.dsx-ticket-subject {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--c-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Stats panel */
+.dsx-stat-lbl {
+  font-size: 10.5px;
+  color: var(--c-text-muted);
+}
+.dsx-stat-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--c-purple-1);
+}
+
+/* Notifications panel */
+.dsx-notif-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.dsx-notif-item {
+  font-size: 10.5px;
+  color: var(--c-text-muted);
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Chart panel */
+.dsx-chart {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+.dsx-bar {
+  flex: 1;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--c-purple-2), var(--c-indigo));
+}
+
+/* Agents panel */
+.dsx-avatar-stack {
+  display: flex;
+  margin-bottom: 6px;
+}
+.dsx-avatar-stack span {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  border: 2px solid rgba(14, 10, 30, 0.9);
+  margin-left: -8px;
+}
+.dsx-avatar-stack span:first-child {
+  margin-left: 0;
+}
+
+/* Cursor tags */
+.dsx-cursor-tag {
+  position: absolute;
+  top: 46%;
+  left: 50%;
+  display: flex;
+  align-items: flex-start;
+  gap: 0;
+  pointer-events: none;
+  opacity: 0;
+  will-change: opacity, transform;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.35));
+  z-index: 20;
+}
+.dsx-cursor-arrow {
+  flex-shrink: 0;
+  transform: translate(-1px, -1px);
+}
+.dsx-cursor-label {
+  margin-left: 6px;
+  padding: 5px 11px;
+  border-radius: 0 12px 12px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #fff;
+  background: var(--tag-accent, var(--c-purple-2));
+  white-space: nowrap;
+}
+
+.dsx-hint {
+  margin-top: 28px;
+  font-size: 12px;
+  color: var(--c-text-dim);
+  will-change: opacity;
+}
+
+/* ── Responsive ───────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .dsx-section {
+    height: 220vh;
+  }
+  .dsx-h2 {
+    font-size: 24px;
+  }
+  .dsx-stage {
+    max-width: 340px;
+  }
+  .dsx-ticket-subject {
+    font-size: 9.5px;
+  }
+  .dsx-cursor-tag {
+    display: none; /* keep small screens uncluttered */
+  }
+}
