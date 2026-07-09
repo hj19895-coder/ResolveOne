@@ -74,12 +74,13 @@ app.use((req, res, next) => {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:3000",
-  "https://deskfloww.netlify.app",
-  "http://localhost:30001"
-];
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
+  : [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:30001",
+    ];
 
  
 // ── Rate limiting ─────────────────────────────────────────────────────────────
