@@ -2,6 +2,8 @@ import { useState, useCallback, useEffect, useMemo } from "react";
 import { RefreshCw, Download, Users } from "lucide-react";
 import * as XLSX from "xlsx";
 import useDashboardTheme from "../../hooks/useDashboardTheme";
+import api from "../../api/axios";
+
 
 const DEFAULT_STATUS_COLUMNS = [
   "Confirmation_awaiting",
@@ -66,9 +68,8 @@ export default function DeveloperPivotCardDark({ onDataLoad }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/reports/developer-pending");
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      const json = await res.json();
+      const res = await api.get("/reports/developer-pending");
+      const json = res.data;
       setRows(json.rows ?? []);
       setStatusColumns(json.statusColumns ?? []);
       setGeneratedAt(json.generatedAt ?? null);
