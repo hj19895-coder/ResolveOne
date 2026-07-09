@@ -26,14 +26,31 @@ import { PrismaClient } from '@prisma/client';
 import reportsRouter from "./routes/reports.js";
 
 
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? process.env.ALLOWED_ORIGINS.split(",").map(o => o.trim())
+  : [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:30001",
+      "https://resolveone.netlify.app",
+    ];
+
+
 const corsOptions = {
-  origin: (origin, callback) => {
-    console.log("Checking origin:", origin, "against:", allowedOrigins);
+  origin(origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
       return callback(null, true);
     }
-    return callback(null, false);
+    return callback(new Error("Blocked by CORS"));
   },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With"
+  ]
+};
 
  
 const __filename = fileURLToPath(import.meta.url);
@@ -68,17 +85,11 @@ app.use((req, res, next) => {
 });
 
 
-
+console.log("Allowed Origins:", allowedOrigins);
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions));
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()).filter(Boolean)
-  : [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://localhost:30001",
-    ];
+
 
  
 // ── Rate limiting ─────────────────────────────────────────────────────────────
