@@ -1,6 +1,8 @@
 // src/components/reports/ClientStatusCard.jsx
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { RefreshCw, Download } from "lucide-react";
+import api from "../../api/axios";
+
 
 // ─── Status column config (order + display label) ───────────────────────────
 const DEFAULT_STATUS_COLUMNS = [
@@ -64,9 +66,8 @@ export default function ClientStatusCard({ onDataLoad }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/reports/client-status");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
+      const res = await api.get("/reports/client-status");
+      const json = res.data;
       setData(json);
       onDataLoad?.(json);
     } catch (e) {
