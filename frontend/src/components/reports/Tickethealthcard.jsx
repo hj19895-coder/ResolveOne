@@ -5,6 +5,8 @@ import * as XLSX from "xlsx";
 import { TICKET_HEALTH_ROWS } from "../../config/reportConfig";
 import ReportInsightsBot from "./ReportInsightsBot";
 import useDashboardTheme from "../../hooks/useDashboardTheme";
+import api from "../../api/axios";
+
 
 const W = 580;
 const COL = { cat: 340, today: 110, weekly: 130 };
@@ -57,9 +59,8 @@ export default function TicketHealthCard({ onDataLoad }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/reports/ticket-health");
-      if (!res.ok) throw new Error(`Server error: ${res.status}`);
-      const json = await res.json();
+      const res = await api.get("/reports/ticket-health");
+      const json = res.data;
       setData(json);
       onDataLoad?.(json);
     } catch (e) {
