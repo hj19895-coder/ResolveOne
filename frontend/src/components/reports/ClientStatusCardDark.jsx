@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Users, RefreshCw, Download } from "lucide-react";
 import useDashboardTheme from "../../hooks/useDashboardTheme";
+import api from "../../api/axios";
+
 
 const DEFAULT_STATUS_COLUMNS = [
   "On-hold",
@@ -56,9 +58,8 @@ export default function ClientStatusCardDark({ onDataLoad }) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch("/api/reports/client-status");
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
+      const res = await api.get("/reports/client-status");
+      const json = res.data;
       setData(json);
       onDataLoad?.(json);
     } catch (e) {
