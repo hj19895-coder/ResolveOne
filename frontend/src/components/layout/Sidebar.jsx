@@ -2,7 +2,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
-import "./Sidebar.css";
+import "./sidebar.css";
 
 const icons = {
   settings: (
